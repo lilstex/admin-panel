@@ -23,6 +23,16 @@
     <div class="card-body">
       <p class="login-box-msg">Register a new account</p>
 
+      @if ($errors->any())
+      <div class="alert alert-danger">
+          <ul>
+              @foreach ($errors->all() as $error)
+                  <li>{{ $error }}</li>
+              @endforeach
+          </ul>
+      </div>
+      @endif
+
       <form action="{{ url('/admin/register') }}" method="post">
         @csrf
         <div class="input-group mb-3">
@@ -50,7 +60,7 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" name="confirm_password" class="form-control" placeholder="Retype password">
+          <input type="password" name="password_confirmation" class="form-control" placeholder="Retype password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>

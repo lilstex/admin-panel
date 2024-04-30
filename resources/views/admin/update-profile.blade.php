@@ -12,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ url('admin/dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item active">Change Password</li>
+              <li class="breadcrumb-item active">Update Profile</li>
             </ol>
           </div>
         </div>
@@ -28,7 +28,7 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Password Change</h3>
+                <h3 class="card-title">Update Profile</h3>
               </div>
                 @if ($errors->any())
                 <div class="alert alert-danger">
@@ -48,7 +48,7 @@
                     </button>
                 </div>
                 @endif
-              <form action="{{ url('admin/change_password' )}}" method="post">
+              <form action="{{ url('admin/update_profile' )}}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
@@ -56,21 +56,29 @@
                         <input name="email" class="form-control" value="{{ Auth::guard('admin')->user()->email }}" readonly style="background-color: #666;">
                       </div>
                   <div class="form-group">
-                    <label for="exampleInputPassword1">Current Password</label>
-                    <input type="password" name="current_password" class="form-control" id="exampleInputPassword1" placeholder="Current Password">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" @if(isset(Auth::guard('admin')->user()->name)) value="{{ Auth::guard('admin')->user()->name }}" 
+                        @endif
+                        class="form-control" id="name" placeholder="Full Name">
                   </div>
                   <div class="form-group">
-                    <label for="exampleInputPassword1">New Password</label>
-                    <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="New Password">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" name="phone" @if(isset(Auth::guard('admin')->user()->phone)) value="{{ Auth::guard('admin')->user()->phone }}"
+                    @endif
+                    class="form-control" id="phone" placeholder="08162696846">
                   </div>
                   <div class="form-group">
-                    <label for="exampleInputPassword1">Confirm New Password</label>
-                    <input type="password" name="password_confirmation" class="form-control" id="exampleInputPassword1" placeholder="Confirm New Password">
+                    <label for="image">Image</label>
+                    <input type="file" name="image" class="form-control" id="image">
+                    @if(isset(Auth::guard('admin')->user()->image))
+                    <a href="{{ url('admin/images/profile/'.Auth::guard('admin')->user()->image)}}" target="_blank">View Profile Image</a>
+                    <input type="hidden" value="{{ Auth::guard('admin')->user()->image }}">
+                    @endif
                   </div>
                 </div>
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Update Password</button>
+                  <button type="submit" class="btn btn-primary">Update Profile</button>
                 </div>
               </form>
             </div>

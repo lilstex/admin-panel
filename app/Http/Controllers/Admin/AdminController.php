@@ -2,43 +2,56 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contracts\AdminInterface;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Models\Admin;
+use App\Http\Requests\AdminStoreRequest;
+use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\UpdateAdminProfileRequest;
+use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
+    public $admin;
+
+    /**
+     * Assingning the admin interface to the admin
+     */
+    function __construct(AdminInterface $adminInterface) {
+        $this->admin = $adminInterface;
+    }
     /**
      * Display the admin dashboard
      */
     public function index()
     {
+        // To enable page link active 
+        Session::put('page', 'dashboard');
         return view('admin.dashboard');
     }
 
     /**
      * Display the admin login page and login admin
      */
-    public function login(Request $request)
+    public function login()
     {
-        if($request->isMethod('post')) {
-            $request->validate([
-                'email' => 'required|email|max:255',
-                'password' => 'required|min:5',
-            ]);
-
-            $data = $request->all();
-            
-            // echo "<pre>"; print_r($data); die;
-            if(Auth::guard('admin')->attempt(['email' => $data['email'], 'password' => $data['password']])) {
-                return redirect()->route('dashboard');
-            } else {
-                return redirect()->back()->withErrors(['error_message' => 'Invalid credentials']);
-            }
-        }
         return view('admin.login');
+    }
+
+    /**
+     * Execute login post action
+     */
+    public function loginStore(LoginRequest $request)
+    {
+        $validated= $request->validated();
+
+        $isLogin = $this->admin->login($validated);
+        // echo "<pre>"; print_r($isLogin); die;
+        if($isLogin) {
+            return redirect()->route('dashboard');
+        } else {
+            return redirect()->back()->withErrors(['error_message' => 'Invalid credentials']);
+        }
     }
 
     /**
@@ -50,44 +63,84 @@ class AdminController extends Controller
     }
 
     /**
+     * Store the admin
+     */
+    public function registerStore(AdminStoreRequest $request)
+    {
+        $validated = $request->validated();
+
+        $newAdmin = $this->admin->register($validated);
+        
+        // echo "<pre>"; print_r($data); die;
+        if($newAdmin) {
+            return redirect()->route('dashboard');
+        } else {
+            return redirect()->back()->withErrors(['error_message' => 'Failed to register admin']);
+        }
+       
+    }
+
+    /**
      * Logout admin
      */
     public function logout()
     {
-        Auth::guard('admin')->logout();
-
-        return redirect()->route('login');
+        $isLogout = $this->admin->logout();
+        if($isLogout) {
+            return redirect()->route('login');
+        } else {
+            return redirect()->back()->withErrors(['error_message' => 'Failed to logout admin']);
+        }
     }
 
-     /**
+    /**
      * Display the admin change password page and change password
      */
-    public function password(Request $request)
+    public function password()
     {
-        if($request->isMethod('post')) {
-            $request->validate([
-                'current_password' => 'required|min:5',
-                'new_password' => 'required|min:5',
-                'confirm_password' => 'required|min:5',
-            ]);
-            $data = $request->all();
-            
-            if(Hash::check($data['current_password'], Auth::guard('admin')->user()->password)) {
-                // Check if password match
-                if($data['new_password'] == $data['confirm_password']) {
-                    // Update Admin password
-                    Admin::where('id', Auth::guard('admin')->user()->id)->update(['password' => bcrypt($data['new_password'])]);
-                    return redirect()->back()->with(['success_message' => 'Password changed successfully']);
-                } else {
-                    return redirect()->back()->withErrors(['error_message' => 'New password and confirm password do not match']);
-                }
-                return redirect()->route('dashboard');
-            } else {
-                return redirect()->back()->withErrors(['error_message' => 'Incorrect current password']);
-            }
-        }
+        // To enable page link active 
+        Session::put('page', 'change-password');
         return view('admin.change-password');
     }
 
+     /**
+     * Update and change password
+     */
+    public function passwordStore(ChangePasswordRequest $request)
+    {
+        $validated = $request->validated();
+        $isChanged = $this->admin->changePassword($validated);
+        
+        if($isChanged) {
+            return redirect()->back()->with(['success_message' => 'Password changed successfully']);
+        } else {
+            return redirect()->back()->withErrors(['error_message' => 'Current password is incorrect']);
+        }
+    }
+
+    /**
+     * Display the update admin profile page
+     */
+    public function profile()
+    {
+        // To enable page link active 
+        Session::put('page', 'update-profile');
+        return view('admin.update-profile');
+    }
+
+     /**
+     * Update admin profile
+     */
+    public function updateProfile(UpdateAdminProfileRequest $request)
+    {
+        $validated = $request->validated();
+        $isChanged = $this->admin->updateProfile($validated);
+        
+        if($isChanged) {
+            return redirect()->back()->with(['success_message' => 'Admin profile updated successfully']);
+        } else {
+            return redirect()->back()->withErrors(['error_message' => 'Failed to update admin profile']);
+        }
+    }
 
 }
