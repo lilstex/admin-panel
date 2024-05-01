@@ -71,8 +71,6 @@ class AdminRepository implements AdminInterface {
         return $admin;
     }
 
-
-
     public function logout() {
         return Auth::guard('admin')->logout();
     }

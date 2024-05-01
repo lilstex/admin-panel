@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CmsPageController as AdminCmsPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,5 +32,15 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::post('change_password', [AdminController::class, 'passwordStore']);
         Route::get('update_profile', [AdminController::class, 'profile']);
         Route::post('update_profile', [AdminController::class, 'updateProfile']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | CMS PAGES RESOURCE ROUTES
+        |--------------------------------------------------------------------------
+        |
+        */
+        Route::resource('cms_page', AdminCmsPageController::class);
+        Route::post('cms_page/update_cms_status', [AdminCmsPageController::class, 'updateCmsStatus']);
+
     });
 });

@@ -28,7 +28,7 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Password Change</h3>
+                <h3 class="card-title">Change Admin Password</h3>
               </div>
                 @if ($errors->any())
                 <div class="alert alert-danger">

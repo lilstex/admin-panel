@@ -11,10 +11,9 @@ class RepositoriesServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(
-            'App\Contracts\AdminInterface',
-            'App\Repositories\AdminRepository'
-        );
+        $this->app->bind('App\Contracts\AdminInterface', 'App\Repositories\AdminRepository');
+        $this->app->bind('App\Contracts\CmsInterface', 'App\Repositories\CmsRepository');
+
     }
 
     /**
