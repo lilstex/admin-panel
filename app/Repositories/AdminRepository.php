@@ -24,6 +24,13 @@ class AdminRepository implements AdminInterface {
     }
 
     public function login(array $data) {
+        if(isset($data['remember'])) {
+            setcookie('email', $data['email'], time()+3600);
+            setcookie('password', $data['password'], time()+3600);
+        } else {
+            setcookie('email', '');
+            setcookie('password', '');
+        }
         return Auth::guard('admin')->attempt(['email' => $data['email'], 'password' => $data['password']]);
     }
 
