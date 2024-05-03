@@ -24,7 +24,7 @@ class UpdateAdminProfileRequest extends FormRequest
         return [
             'name' => 'required|max:255',
             'phone' => 'sometimes|numeric',
-            'image' => 'image',
+            'image' => 'sometimes|image',
         ];
     }
 }

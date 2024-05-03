@@ -21,8 +21,6 @@ Route::get('/', function () {
 
 Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function () {
     // Route::match(['get', 'post'], 'login', [AdminController::class, 'login'])->name('login'); // Match is used when using same route for different methods
-    Route::get('register', [AdminController::class, 'register']);
-    Route::post('register', [AdminController::class, 'registerStore']);
     Route::get('login', [AdminController::class, 'login'])->name('login');
     Route::post('login', [AdminController::class, 'loginStore']);
     Route::group(['middleware' => ['admin']], function () {
@@ -32,6 +30,14 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::post('change_password', [AdminController::class, 'passwordStore']);
         Route::get('update_profile', [AdminController::class, 'profile']);
         Route::post('update_profile', [AdminController::class, 'updateProfile']);
+
+        Route::get('subadmins', [AdminController::class, 'subadmins']);
+        Route::get('subadmin/register', [AdminController::class, 'register']);
+        Route::post('subadmin/register', [AdminController::class, 'registerStore']);
+        Route::get('subadmin/{admin}/edit', [AdminController::class, 'edit']);
+        Route::put('subadmin/{admin}', [AdminController::class, 'update']);
+        Route::post('subadmin/update_admin_status', [AdminController::class, 'updateAdminStatus']);
+        Route::delete('subadmin/{admin}', [AdminController::class, 'destroy']);
 
         /*
         |--------------------------------------------------------------------------

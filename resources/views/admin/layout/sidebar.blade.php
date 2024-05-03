@@ -88,6 +88,20 @@
               </li>
             </ul>
           </li>
+
+          @if (Session::get('page') == 'sub-admin')
+            @php $active = "active" @endphp
+          @else
+            @php $active = "" @endphp
+          @endif
+          <li class="nav-item">
+            <a href="{{ url('admin/subadmins' )}}" class="nav-link {{$active}}">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Subadmins
+              </p>
+            </a>
+          </li>
           
           @if (Session::get('page') == 'cms-page')
             @php $active = "active" @endphp

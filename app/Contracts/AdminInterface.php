@@ -20,6 +20,8 @@ interface AdminInterface {
 
     public function update($id, array $data);
 
+    public function updateStatus(array $data);
+
     public function delete($id);
 
 }

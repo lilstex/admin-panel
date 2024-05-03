@@ -11,7 +11,7 @@ use Intervention\Image\Drivers\Imagick\Driver;
 
 class AdminRepository implements AdminInterface {
     public function all() {
-        return Admin::all();
+        return Admin::where('type', 'subadmin')->get();
     }
 
     public function register(array $data) {
@@ -20,6 +20,7 @@ class AdminRepository implements AdminInterface {
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => $password,
+            'type' => 'subadmin',
         ]);
     }
 
@@ -91,9 +92,19 @@ class AdminRepository implements AdminInterface {
         $admin->update([
             'name' => $data['name'],
             'phone' => $data['phone'],
-            'image' => $data['image'],
         ]);
         return $admin;
+    }
+
+    public function updateStatus(array $data) {
+        if($data['status'] == 'Active') {
+            $status = 0;
+        } else {
+            $status = 1;
+        }
+        $id = (int)$data['admin_id'];
+        $subadmin = Admin::where('id', $id)->update(['status' => $status]);
+        return $subadmin;
     }
 
     public function delete($id) {

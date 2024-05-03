@@ -8,6 +8,7 @@ use App\Http\Requests\AdminStoreRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\UpdateAdminProfileRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
@@ -59,7 +60,8 @@ class AdminController extends Controller
      */
     public function register()
     {
-        return view('admin.register');
+        $title = 'Add Admin';
+        return view('admin.pages.addAdmin')->with(compact('title'));
     }
 
     /**
@@ -71,11 +73,11 @@ class AdminController extends Controller
 
         $newAdmin = $this->admin->register($validated);
         
-        // echo "<pre>"; print_r($data); die;
         if($newAdmin) {
+            return redirect('admin/subadmins')->with(['success_message' => 'New Admin added successfully']);
             return redirect()->route('dashboard');
         } else {
-            return redirect()->back()->withErrors(['error_message' => 'Failed to register admin']);
+            return redirect()->back()->withErrors(['error_message' => 'Failed to add an admin']);
         }
        
     }
@@ -140,6 +142,77 @@ class AdminController extends Controller
             return redirect()->back()->with(['success_message' => 'Admin profile updated successfully']);
         } else {
             return redirect()->back()->withErrors(['error_message' => 'Failed to update admin profile']);
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+    */
+    public function subadmins()
+    {
+        Session::put('page', 'sub-admin');
+        $admins = $this->admin->all();
+        if($admins) {
+            return view('admin.pages.subadmins')->with(compact('admins'));
+        } else {
+            return redirect()->back()->withErrors(['error_message' => 'Failed to get all subadmins']);
+        }
+    }
+
+     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        Session::put('page', 'sub-admin');
+        $title = 'Edit Admin';
+        $subadmin = $this->admin->show($id);
+        return view('admin.pages.addAdmin')->with(compact('title', 'subadmin'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateAdminProfileRequest $request, $id)
+    {
+        $validated = $request->validated();
+        $updatedCmsPage = $this->admin->update($id, $validated);
+        
+        if($updatedCmsPage) {
+            return redirect('admin/subadmins')->with(['success_message' => 'Subadmin updated successfully']);
+        } else {
+            return redirect()->back()->withErrors(['error_message' => 'Failed to subadmin']);
+        }
+    }
+
+     /**
+     * Update admin status
+     */
+    public function updateAdminStatus(Request $request)
+    {
+        if($request->ajax()) {
+            $data = $request->all();
+            $isChanged = $this->admin->updateStatus($data);
+
+            if($isChanged) {
+                return response()->json(['status' => $data['status'], 'admin_id' => $data['admin_id']]);
+            } else {
+                return redirect()->back()->withErrors(['error_message' => 'Failed to update admin status']);
+            }
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        $deletedAdmin = $this->admin->delete($id);
+        
+        if($deletedAdmin) {
+            return redirect()->back()->with(['success_message' => 'Subadmin deleted successfully']);
+        } else {
+            return redirect()->back()->withErrors(['error_message' => 'Failed to update subadmin']);
         }
     }
 
