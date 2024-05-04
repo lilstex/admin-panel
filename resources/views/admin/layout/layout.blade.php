@@ -92,6 +92,7 @@
   $(function () {
     $("#cmsPages").DataTable();
     $("#subadmins").DataTable();
+    $("#categories").DataTable();
 
     //Initialize Select2 Elements
     $('.select2').select2();

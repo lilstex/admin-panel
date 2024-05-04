@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Contracts\AdminInterface;
 use App\Models\Admin;
+use App\Models\adminRoles;
+use App\Models\AdminsRole;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\ImageManager;
@@ -16,12 +18,18 @@ class AdminRepository implements AdminInterface {
 
     public function register(array $data) {
         $password = Hash::make($data['password']);
-        return Admin::create([
+        $admin = Admin::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => $password,
             'type' => 'subadmin',
         ]);
+        if($admin) {
+            $role = new AdminsRole();
+            $role->admin_id = (int)$admin->id;
+            $role->save();
+        }
+        return $admin;
     }
 
     public function login(array $data) {
@@ -87,6 +95,21 @@ class AdminRepository implements AdminInterface {
         return Admin::find($id);
     }
 
+    public function getPermissions($id) {
+        $role = AdminsRole::where('admin_id', $id)->first();
+        // Find the admin name
+        $admin= Admin::find($id)->first();
+        // Return only the updated data
+        return [
+            'admin_id' => $role->admin_id,
+            'name' => $admin->name,
+            'module' => $role->module,
+            'view_access' => $role->view_access,
+            'edit_access' => $role->edit_access,
+            'full_access' => $role->full_access,
+        ];
+    }
+
     public function update($id, array $data) {
         $admin = Admin::find($id);
         $admin->update([
@@ -107,6 +130,41 @@ class AdminRepository implements AdminInterface {
         return $subadmin;
     }
 
+    public function updateRoles(array $data) {
+        // Extract permissions data
+        $permissions = $data['cms_pages'] ?? [];
+    
+        // Ensure admin ID is an integer
+        $adminId = (int)$data['admin_id'];
+    
+        // Find the admin role
+        $role = AdminsRole::where('admin_id', $adminId)->first();
+    
+        // If role doesn't exist, create a new one
+        if (!$role) {
+            $role = new AdminsRole();
+            $role->admin_id = $adminId;
+        }
+    
+        // Update or set permissions
+        $role->module = 'cms_pages';
+        $role->view_access = isset($permissions['view']) ? (int)$permissions['view'] : 0;
+        $role->edit_access = isset($permissions['edit']) ? (int)$permissions['edit'] : 0;
+        $role->full_access = isset($permissions['full']) ? (int)$permissions['full'] : 0;
+    
+        // Save the role
+        $role->save();
+    
+        // Return only the updated data
+        return [
+            'admin_id' => $role->admin_id,
+            'module' => $role->module,
+            'view_access' => $role->view_access,
+            'edit_access' => $role->edit_access,
+            'full_access' => $role->full_access,
+        ];
+    }
+    
     public function delete($id) {
         return Admin::destroy($id);
     }

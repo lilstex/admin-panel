@@ -27,11 +27,13 @@ class CmsPageController extends Controller
     public function index()
     {
         Session::put('page', 'cms-page');
-        $allPages = $this->cmsPage->all();
-        if($allPages) {
-            return view('admin.pages.index')->with(compact('allPages'));
+        $data = $this->cmsPage->all();
+        $allPages = $data['pages'];
+        $permissions = $data['permissions'];
+        if($permissions['view_access'] == 1 || $permissions['edit_access'] == 1 || $permissions['full_access'] == 1) {
+            return view('admin.pages.index')->with(compact('allPages', 'permissions'));
         } else {
-            return redirect()->back()->withErrors(['error_message' => 'Failed to get all CMS Pages']);
+            return redirect()->back()->withErrors(['error_message' => 'Unauthorised to view the resource']);
         }
     }
 

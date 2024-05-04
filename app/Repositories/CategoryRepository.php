@@ -2,16 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Contracts\CmsInterface;
+use App\Contracts\CategoryInterface;
 use App\Models\AdminsRole;
+use App\Models\Category;
 use App\Models\CmsPage;
 use Illuminate\Support\Facades\Auth;
 
-class CmsRepository implements CmsInterface {
+class CategoryRepository implements CategoryInterface {
     public function all() {
         // Initialize permissions with default values
         $permissions = [
-            'module' => 'cms_pages',
+            'module' => 'categories',
             'view_access' => 0,
             'edit_access' => 0,
             'full_access' => 0,
@@ -37,12 +38,12 @@ class CmsRepository implements CmsInterface {
             $permissions['full_access'] = 1;
         }
     
-        // Retrieve all CMS pages
-        $pages = CmsPage::all();
+        // Retrieve all categories
+        $categories = Category::with('parentcategory')->get();
     
-        // Combine pages and permissions into an associative array
+        // Combine categories and permissions into an associative array
         $data = [
-            'pages' => $pages,
+            'categories' => $categories,
             'permissions' => $permissions,
         ];
     

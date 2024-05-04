@@ -82,7 +82,8 @@
                         &nbsp;&nbsp;
                         <a href="{{ url('admin/subadmin/' . $admin['id'] . '/edit') }}"><i style="color: #3f6ed3;" class="fas fa-edit"></i></a>
                         &nbsp;&nbsp;
-                       
+                        <a href="{{ url('admin/subadmin/' . $admin['id'] . '/roles') }}"><i style="color: #3f6ed3;" class="fas fa-unlock"></i></a>
+                        &nbsp;&nbsp;
                         <form method="POST" action="{{ url('admin/subadmin/' . $admin['id']) }}" style="display: inline;">
                           @csrf
                           @method('DELETE')

@@ -8,6 +8,7 @@ use App\Http\Requests\AdminStoreRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\UpdateAdminProfileRequest;
+use App\Http\Requests\UpdateRoleRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -61,7 +62,7 @@ class AdminController extends Controller
     public function register()
     {
         $title = 'Add Admin';
-        return view('admin.pages.addAdmin')->with(compact('title'));
+        return view('admin.addAdmin')->with(compact('title'));
     }
 
     /**
@@ -153,13 +154,13 @@ class AdminController extends Controller
         Session::put('page', 'sub-admin');
         $admins = $this->admin->all();
         if($admins) {
-            return view('admin.pages.subadmins')->with(compact('admins'));
+            return view('admin.subadmins')->with(compact('admins'));
         } else {
             return redirect()->back()->withErrors(['error_message' => 'Failed to get all subadmins']);
         }
     }
 
-     /**
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
@@ -167,7 +168,7 @@ class AdminController extends Controller
         Session::put('page', 'sub-admin');
         $title = 'Edit Admin';
         $subadmin = $this->admin->show($id);
-        return view('admin.pages.addAdmin')->with(compact('title', 'subadmin'));
+        return view('admin.addAdmin')->with(compact('title', 'subadmin'));
     }
 
     /**
@@ -185,7 +186,7 @@ class AdminController extends Controller
         }
     }
 
-     /**
+    /**
      * Update admin status
      */
     public function updateAdminStatus(Request $request)
@@ -201,6 +202,32 @@ class AdminController extends Controller
             }
         }
     }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function editAdminRoles($id)
+    {
+        Session::put('page', 'sub-admin');
+        $role = $this->admin->getPermissions($id);
+        $title = 'Update '.$role['name'].' Permissions';
+        return view('admin.adminRoles')->with(compact('title', 'role'));
+    }
+
+    /**
+     * Update admin access
+     */
+    public function updateAdminRoles(UpdateRoleRequest $request)
+    {
+        $validated = $request->validated();
+        $role = $this->admin->updateRoles($validated);
+        if($role) {
+            return redirect()->back()->with(['success_message' => 'Permissions updated successfully']);
+        } else {
+            return redirect()->back()->withErrors(['error_message' => 'Failed to update permission']);
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.

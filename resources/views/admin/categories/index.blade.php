@@ -7,12 +7,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Content Management System (CMS)</h1>
+            <h1 class="m-0">Category Management</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ url('admin/dashboard') }}">Home</a></li>
-              <li class="breadcrumb-item active">CMS Pages</li>
+              <li class="breadcrumb-item active">Category Management</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -29,9 +29,9 @@
             <!-- TABLE STARTS -->
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Content Management System Pages</h3>
+                <h3 class="card-title">All Categories</h3>
                 @if ($permissions['full_access'] == 1)
-                  <a class="btn btn-block btn-primary" href="{{ url('admin/cms_page/create') }}" style="max-width: 150px; float: right; display: inline-block">Add CMS Page</a>
+                  <a class="btn btn-block btn-primary" href="{{ url('admin/categories/create') }}" style="max-width: 150px; float: right; display: inline-block">Add Category</a>
                 @endif
               </div>
               @if ($errors->any())
@@ -54,43 +54,49 @@
               @endif
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="cmsPages" class="table table-bordered table-striped">
+                <table id="categories" class="table table-bordered table-striped">
                   <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Title</th>
+                    <th>Name</th>
+                    <th>Parent Name</th>
                     <th>URL</th>
                     <th>Created On</th>
                     <th>Actions</th>
                   </tr>
                   </thead>
                   <tbody>
-                    @foreach ($allPages as $page)
+                    @foreach ($allCategories as $category)
                     <tr>
-                      <td>{{ $page['id'] }}</td>
-                      <td>{{ $page['title'] }}</td>
-                      <td>{{ $page['url'] }}</td>
-                      <td>{{ date("F j, Y, g:i a", strtotime($page['created_at'])) }}</td>
+                      <td>{{ $category['id'] }}</td>
+                      <td>{{ $category['category_name'] }}</td>
+                      <td>
+                      @if (isset($category['parentcategory']['category_name']))
+                        {{ $category['parentcategory']['category_name'] }}
+                      @endif
+                      </td>
+                      <td>{{ $category['url'] }}</td>
+                      <td>{{ date("F j, Y, g:i a", strtotime($category['created_at'])) }}</td>
                       <td>
                       @if ($permissions['edit_access'] == 1 || $permissions['full_access'] == 1)
-                        @if ($page['status'] == 1)
-                        <a class="updateCmsStatus" id="page-{{$page['id']}}" page_id="{{ $page['id'] }}" href="javascript:void(0)" style="color: #3f6ed3;">
+                        @if ($category['status'] == 1)
+                        <a class="updateCategoryStatus" id="page-{{$category['id']}}" page_id="{{ $category['id'] }}" href="javascript:void(0)" style="color: #3f6ed3;">
                           <i status="Active" class="fas fa-toggle-on"></i>
                         </a>
                         @else
-                        <a class="updateCmsStatus" id="page-{{$page['id']}}" page_id="{{ $page['id'] }}" href="javascript:void(0)" style="color: grey;">
+                        <a class="updateCategoryStatus" id="page-{{$category['id']}}" page_id="{{ $category['id'] }}" href="javascript:void(0)" style="color: grey;">
                           <i status="Inactive" class="fas fa-toggle-off"></i>
                         </a>
                         @endif
                         &nbsp;&nbsp;
-                        <a href="{{ url('admin/cms_page/' . $page['id'] . '/edit') }}"><i style="color: #3f6ed3;" class="fas fa-edit"></i></a>
+                        <a href="{{ url('admin/categories/' . $category['id'] . '/edit') }}"><i style="color: #3f6ed3;" class="fas fa-edit"></i></a>
                         &nbsp;&nbsp;
                       @endif
                       @if ($permissions['full_access'] == 1)
-                        <form method="POST" action="{{ url('admin/cms_page/' . $page['id']) }}" style="display: inline;">
+                        <form method="POST" action="{{ url('admin/categories/' . $category['id']) }}" style="display: inline;">
                           @csrf
                           @method('DELETE')
-                          <button type="submit" name="CMS Page" class="confirmDelete" style="background: none; border: none; padding: 0; color: #dc3545;">
+                          <button type="submit" name="category" class="confirmDelete" style="background: none; border: none; padding: 0; color: #dc3545;">
                             <i class="fas fa-trash"></i>
                           </button>
                         </form>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CmsPageController as AdminCmsPageController;
 
 /*
@@ -37,6 +38,10 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::get('subadmin/{admin}/edit', [AdminController::class, 'edit']);
         Route::put('subadmin/{admin}', [AdminController::class, 'update']);
         Route::post('subadmin/update_admin_status', [AdminController::class, 'updateAdminStatus']);
+        // Update admin access
+        Route::get('subadmin/{admin}/roles', [AdminController::class, 'editAdminRoles']);
+        Route::put('subadmin/{admin}/roles', [AdminController::class, 'updateAdminRoles']);
+        // Delete admin
         Route::delete('subadmin/{admin}', [AdminController::class, 'destroy']);
 
         /*
@@ -47,6 +52,15 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         */
         Route::resource('cms_page', AdminCmsPageController::class);
         Route::post('cms_page/update_cms_status', [AdminCmsPageController::class, 'updateCmsStatus']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | CATEGORIES RESOURCE ROUTES
+        |--------------------------------------------------------------------------
+        |
+        */
+        Route::resource('categories', CategoryController::class);
+        Route::post('categories/update_cms_status', [CategoryController::class, 'updateCmsStatus']);
 
     });
 });
