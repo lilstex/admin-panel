@@ -49,7 +49,7 @@ class CmsPageController extends Controller
             if($isChanged) {
                 return response()->json(['status' => $data['status'], 'page_id' => $data['page_id']]);
             } else {
-                return redirect()->back()->withErrors(['error_message' => 'Failed to update admin profile']);
+                return redirect()->back()->withErrors(['error_message' => 'Failed to update cms page status']);
             }
         }
     }

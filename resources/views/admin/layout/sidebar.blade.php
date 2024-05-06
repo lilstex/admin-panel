@@ -107,18 +107,44 @@
             </a>
           </li>
 
-          @if (Session::get('page') == 'category')
+
+          @if (Session::get('page') == 'category' || Session::get('page') == 'product')
             @php $active = "active" @endphp
           @else
             @php $active = "" @endphp
           @endif
-          <li class="nav-item">
-            <a href="{{ url('admin/categories' )}}" class="nav-link {{$active}}">
-              <i class="nav-icon fas fa-copy"></i>
+          <li class="nav-item menu-open">
+            <a href="{{ url('admin/dashboard' )}}" class="nav-link {{$active}}">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
-                Categories
+                Menu
+                <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview">
+              @if (Session::get('page') == 'category')
+                @php $active = "active" @endphp
+              @else
+                @php $active = "" @endphp
+              @endif
+              <li class="nav-item">
+                <a href="{{ url('admin/categories') }}" class="nav-link {{$active}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Categories</p>
+                </a>
+              </li>
+              @if (Session::get('page') == 'product')
+                @php $active = "active" @endphp
+              @else
+                @php $active = "" @endphp
+              @endif
+              <li class="nav-item">
+                <a href="{{ url('admin/products') }}" class="nav-link {{$active}}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Products</p>
+                </a>
+              </li>
+            </ul>
           </li>
           
         </ul>

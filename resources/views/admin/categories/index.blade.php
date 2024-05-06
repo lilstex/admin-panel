@@ -80,11 +80,11 @@
                       <td>
                       @if ($permissions['edit_access'] == 1 || $permissions['full_access'] == 1)
                         @if ($category['status'] == 1)
-                        <a class="updateCategoryStatus" id="page-{{$category['id']}}" page_id="{{ $category['id'] }}" href="javascript:void(0)" style="color: #3f6ed3;">
+                        <a class="updateCategoryStatus" id="category-{{$category['id']}}" category_id="{{ $category['id'] }}" href="javascript:void(0)" style="color: #3f6ed3;">
                           <i status="Active" class="fas fa-toggle-on"></i>
                         </a>
                         @else
-                        <a class="updateCategoryStatus" id="page-{{$category['id']}}" page_id="{{ $category['id'] }}" href="javascript:void(0)" style="color: grey;">
+                        <a class="updateCategoryStatus" id="category-{{$category['id']}}" category_id="{{ $category['id'] }}" href="javascript:void(0)" style="color: grey;">
                           <i status="Inactive" class="fas fa-toggle-off"></i>
                         </a>
                         @endif

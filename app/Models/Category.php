@@ -14,4 +14,21 @@ class Category extends Model
         return $this->hasOne('App\Models\Category', 'id', 'parent_id')->select('id', 'category_name', 'url')->
         where('status', 1);
     }
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'parent_id',
+        'category_name',
+        'category_discount',
+        'desc',
+        'url',
+        'meta_desc',
+        'meta_title',
+        'meta_keywords',
+        'status',
+    ];
 }

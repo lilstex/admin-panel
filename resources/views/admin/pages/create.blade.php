@@ -78,7 +78,7 @@
                         <div class="form-group">
                             <label for="description">Description *</label>
                             <textarea class="form-control" name="description" rows="3" placeholder="Enter Page Description">@if (!empty($cmsPage['desc'])) {{ $cmsPage['desc'] }} @endif</textarea>
-                          </div>
+                        </div>
                         <div class="form-group">
                             <label for="meta_title">Meta Title</label>
                             <input type="text" class="form-control" name="meta_title" id="meta_title" @if (!empty($cmsPage['meta_title'])) value="{{ $cmsPage['meta_title'] }}" @endif placeholder="Enter Meta Title">

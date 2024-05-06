@@ -60,7 +60,7 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         |
         */
         Route::resource('categories', CategoryController::class);
-        Route::post('categories/update_cms_status', [CategoryController::class, 'updateCmsStatus']);
+        Route::post('categories/update_category_status', [CategoryController::class, 'updateCategoryStatus']);
 
     });
 });

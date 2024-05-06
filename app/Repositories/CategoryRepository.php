@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Contracts\CategoryInterface;
 use App\Models\AdminsRole;
 use App\Models\Category;
-use App\Models\CmsPage;
 use Illuminate\Support\Facades\Auth;
 
 class CategoryRepository implements CategoryInterface {
@@ -49,14 +48,15 @@ class CategoryRepository implements CategoryInterface {
     
         return $data;
     }
-    
 
     public function create(array $data) {
-        return CmsPage::create([
-            'title' => $data['title'],
-            'desc' => $data['description'],
+        return Category::create([
+            'parent_id' => 0,
+            'category_name' => $data['category_name'],
+            'category_discount' => $data['category_discount'],
+            'desc' => $data['desc'],
             'url' => $data['url'],
-            'meta_desc' => $data['meta_description'],
+            'meta_desc' => $data['meta_desc'],
             'meta_title' => $data['meta_title'],
             'meta_keywords' => $data['meta_keywords'],
             'status' => 1,
@@ -64,16 +64,17 @@ class CategoryRepository implements CategoryInterface {
     }
 
     public function show($id) {
-        return CmsPage::find($id);
+        return Category::find($id);
     }
 
     public function update($id, array $data) {
-        $cmsPage = CmsPage::find($id);
-        return $cmsPage->update([
-            'title' => $data['title'],
-            'desc' => $data['description'],
+        $category = Category::find($id);
+        return $category->update([
+            'category_name' => $data['category_name'],
+            'category_discount' => $data['category_discount'],
+            'desc' => $data['desc'],
             'url' => $data['url'],
-            'meta_desc' => $data['meta_description'],
+            'meta_desc' => $data['meta_desc'],
             'meta_title' => $data['meta_title'],
             'meta_keywords' => $data['meta_keywords'],
         ]);
@@ -85,13 +86,13 @@ class CategoryRepository implements CategoryInterface {
         } else {
             $status = 1;
         }
-        $id = (int)$data['page_id'];
-        $cmsPage = CmsPage::where('id', $id)->update(['status' => $status]);
-        return $cmsPage;
+        $id = (int)$data['category_id'];
+        $category = Category::where('id', $id)->update(['status' => $status]);
+        return $category;
     }
 
     
     public function delete($id) {
-        return CmsPage::destroy($id);
+        return Category::destroy($id);
     }
 }

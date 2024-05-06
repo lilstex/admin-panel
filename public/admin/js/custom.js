@@ -49,6 +49,31 @@ $(document).ready(function() {
         })
     });
 
+     // Update Category status
+     $(document).on('click','.updateCategoryStatus', function () {
+        var status = $(this).children("i").attr("status");
+        var category_id = $(this).attr("category_id");
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
+            },
+            type: 'post',
+            url: 'categories/update_category_status',
+            data: { status: status, category_id: category_id },
+            success: function (response) {
+                if(response['status'] == 'Inactive') {
+                    $("#category-"+category_id).html("<i class='fas fa-toggle-on' style='color: #3f6ed3;' status='Active'></i>");
+                } else if(response['status'] == 'Active') {
+                    $("#category-"+category_id).html("<i class='fas fa-toggle-off' style='color: grey;' status='Inactive'></i>");
+                }
+                
+            },
+            error: function () {
+
+            }
+        })
+    });
+
     // Confirm Delete Alert
     $(document).on('click', '.confirmDelete', function (event) {
         event.preventDefault(); // Prevent default form submission
