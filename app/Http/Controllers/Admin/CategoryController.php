@@ -60,7 +60,8 @@ class CategoryController extends Controller
     {
         Session::put('page', 'category');
         $title = 'Add Category';
-        return view('admin.categories.create')->with(compact('title'));
+        $categoryLevels = $this->categories->subcategories();
+        return view('admin.categories.create')->with(compact('title', 'categoryLevels'));
     }
 
     /**
@@ -86,7 +87,8 @@ class CategoryController extends Controller
         Session::put('page', 'category');
         $title = 'Edit Category';
         $category = $this->categories->show($id);
-        return view('admin.categories.create')->with(compact('title', 'category'));
+        $categoryLevels = $this->categories->subcategories();
+        return view('admin.categories.create')->with(compact('title', 'category', 'categoryLevels'));
     }
 
     /**
@@ -101,6 +103,19 @@ class CategoryController extends Controller
             return redirect('admin/categories')->with(['success_message' => 'Category updated successfully']);
         } else {
             return redirect()->back()->withErrors(['error_message' => 'Failed to update Category']);
+        }
+    }
+
+    /**
+     * Remove category image
+     */
+    public function deleteImage($id)
+    {
+        $deletedImage = $this->categories->deleteImage($id);
+        if($deletedImage) {
+            return redirect()->back()->with(['success_message' => 'Category image deleted successfully']);
+        } else {
+            return redirect()->back()->withErrors(['error_message' => 'Failed to delete category image']);
         }
     }
 

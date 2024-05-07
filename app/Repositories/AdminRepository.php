@@ -132,8 +132,15 @@ class AdminRepository implements AdminInterface {
 
     public function updateRoles(array $data) {
         // Extract permissions data
-        $permissions = $data['cms_pages'] ?? [];
-    
+        // Get the keys of the array
+        $keys = array_keys($data);
+        $cms = $keys[1];
+        $cat = $keys[2];
+        // Use the keys to access their corresponding arrays
+        $cms_permissions = $data[$cms] ?? [];;
+        $category_permissions = $data[$cat] ?? [];;
+        dd($category_permissions);
+      
         // Ensure admin ID is an integer
         $adminId = (int)$data['admin_id'];
     

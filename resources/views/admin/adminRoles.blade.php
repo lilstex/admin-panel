@@ -74,6 +74,14 @@
                             &nbsp;&nbsp;
                             <input type="checkbox" name="cms_pages[full]" @if ($role['full_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;Full Access
                         </div>
+                        <div class="form-group">
+                            <label for="categories">Categories: </label>&nbsp;&nbsp;
+                            <input type="checkbox" name="categories[view]" @if ($role['view_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;View Access
+                            &nbsp;&nbsp;
+                            <input type="checkbox" name="categories[edit]" @if ($role['edit_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;Edit Access
+                            &nbsp;&nbsp;
+                            <input type="checkbox" name="categories[full]" @if ($role['full_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;Full Access
+                        </div>
                         
                         </div>
                         <!-- /.card-body -->

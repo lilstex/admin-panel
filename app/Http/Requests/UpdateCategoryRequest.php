@@ -23,6 +23,7 @@ class UpdateCategoryRequest extends FormRequest
     {
         return [
             'category_name' => 'required',
+            'parent_id' => 'required',
             'url' => 'required',
             'desc' => 'sometimes',
             'meta_title' => 'sometimes',

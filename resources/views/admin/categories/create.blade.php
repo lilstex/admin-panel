@@ -72,12 +72,54 @@
                                 <input type="text" class="form-control" name="category_name" id="category_name" placeholder="Enter category name" @if (!empty($category['category_name'])) value="{{ $category['category_name'] }}" @else value="{{ old('category_name') }}" @endif required>
                             </div>
                             <div class="form-group">
+                                <label for="name">Category Levels (Parent Category)*</label>
+                                <select name="parent_id" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="1" @if (!empty($category['id']) && $category['parent_id'] == 0) selected @endif>Main category</option>
+                                    @foreach ($categoryLevels as $categoryLevel)
+                                    <option value="{{ $categoryLevel['id'] }}" @if (!empty($category['id']) && $category['parent_id'] == $categoryLevel['id']) selected @endif>
+                                        {{ $categoryLevel['category_name'] }}
+                                    </option>
+                                        @if(!empty($categoryLevel['subcategories']))
+                                        @foreach ($categoryLevel['subcategories'] as $subLevel)
+                                            <option value="{{ $subLevel['id'] }}" @if (!empty($category['id']) && $category['parent_id'] == $subLevel['id']) selected @endif>
+                                                &nbsp;&nbsp;&raquo; {{ $subLevel['category_name'] }}
+                                            </option>
+                                                @if(!empty($subLevel['subcategories']))
+                                                @foreach ($subLevel['subcategories'] as $subsubLevel)
+                                                    <option value="{{ $subsubLevel['id'] }}" @if (!empty($category['id']) && $category['parent_id'] == $subsubLevel['id']) selected @endif>
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&raquo;&raquo; {{ $subsubLevel['category_name'] }}
+                                                    </option>
+                                                @endforeach
+                                                @endif
+                                        @endforeach
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="url">URL</label>
                                 <input type="text" class="form-control" name="url" id="url" placeholder="Enter url" @if (!empty($category['url'])) value="{{ $category['url'] }}" @else value="{{ old('url') }}" @endif required>
                             </div>
                             <div class="form-group">
                                 <label for="meta_title">Meta Title</label>
                                 <input type="text" class="form-control" name="meta_title" id="meta_title" placeholder="Enter meta title" @if (!empty($category['meta_title'])) value="{{ $category['meta_title'] }}" @else value="{{ old('meta_title') }}" @endif>
+                            </div>
+                            <div class="form-group">
+                                <label for="meta_title">Category Image</label>
+                                <input type="file" class="form-control" name="category_image">
+                                @if (isset($category['image']))
+                                    <a href="{{ url('admin/images/category/'.$category['image']) }}" target="_blank">
+                                        <img style="width: 50px; margin: 10px" src="{{ url('admin/images/category/'.$category['image']) }}" alt="Image">
+                                    </a>
+                                    <form method="POST" action="{{ url('admin/categories/image/' . $category['id']) }}" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" name="category" class="confirmDelete" style="background: none; border: none; padding: 0; color: #fff;">
+                                          <i class="fas fa-trash"></i>
+                                        </button>
+                                      </form>
+                                @endif
                             </div>
                             <div class="form-group">
                                 <label for="meta_keywords">Meta Keywords</label>

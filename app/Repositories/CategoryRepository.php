@@ -49,9 +49,15 @@ class CategoryRepository implements CategoryInterface {
         return $data;
     }
 
+    public function subcategories() {
+        // Retrieve all categories/subcategories
+        return Category::getcategories();
+    }
+
+
     public function create(array $data) {
         return Category::create([
-            'parent_id' => 0,
+            'parent_id' => $data['parent_id'],
             'category_name' => $data['category_name'],
             'category_discount' => $data['category_discount'],
             'desc' => $data['desc'],
@@ -70,6 +76,7 @@ class CategoryRepository implements CategoryInterface {
     public function update($id, array $data) {
         $category = Category::find($id);
         return $category->update([
+            'parent_id' => $data['parent_id'],
             'category_name' => $data['category_name'],
             'category_discount' => $data['category_discount'],
             'desc' => $data['desc'],
@@ -91,8 +98,20 @@ class CategoryRepository implements CategoryInterface {
         return $category;
     }
 
-    
     public function delete($id) {
         return Category::destroy($id);
+    }
+
+    public function deleteImage($id) {
+        // Get the image from the DB
+        $cat_image =  Category::select('category_image')->where('id', $id)->first();
+        // Get the image path
+        $image_path = 'admin/images/category/';
+        // Remove the image from the folder
+        if(file_exists(($image_path.$cat_image->category_image))) {
+            unlink($image_path.$cat_image->category_image);
+        }
+        // Remove the image from the DB table
+        return Category::where('id', $id)->update(['category_image' => '']);
     }
 }

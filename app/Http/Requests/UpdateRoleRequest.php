@@ -24,6 +24,7 @@ class UpdateRoleRequest extends FormRequest
         return [
             'admin_id' => 'required',
             'cms_pages' => 'array',
+            'categories' => 'array',
         ];
     }
 }
