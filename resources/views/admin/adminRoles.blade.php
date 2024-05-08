@@ -66,22 +66,31 @@
                         @method('PUT')
                         <div class="card-body">
                         <input type="hidden" class="form-control" name="admin_id" value="{{ $role['admin_id'] }}">
-                        <div class="form-group">
-                            <label for="cms_pages">CMS Pages: </label>&nbsp;&nbsp;
-                            <input type="checkbox" name="cms_pages[view]" @if ($role['view_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;View Access
-                            &nbsp;&nbsp;
-                            <input type="checkbox" name="cms_pages[edit]" @if ($role['edit_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;Edit Access
-                            &nbsp;&nbsp;
-                            <input type="checkbox" name="cms_pages[full]" @if ($role['full_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;Full Access
-                        </div>
+                        @if (!empty($role['permissions']))
+                            @foreach ($role['permissions'] as $permission)
+                            <div class="form-group">
+                                <label for="permissions">{{ $permission['module'] }}:</label>&nbsp;&nbsp;
+                                <input type="checkbox" name="{{ $permission['module'] }}[view]" @if ($permission['view_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;View Access
+                                &nbsp;&nbsp;
+                                <input type="checkbox" name="{{ $permission['module'] }}[edit]" @if ($permission['edit_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;Edit Access
+                                &nbsp;&nbsp;
+                                <input type="checkbox" name="{{ $permission['module'] }}[full]" @if ($permission['full_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;Full Access
+                                &nbsp;&nbsp;
+                                <input type="hidden" name="{{ $permission['module'] }}[module]" value="{{ $permission['module'] }}">
+                            </div>
+                            @endforeach
+                        @else
                         <div class="form-group">
                             <label for="categories">Categories: </label>&nbsp;&nbsp;
-                            <input type="checkbox" name="categories[view]" @if ($role['view_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;View Access
+                            <input type="checkbox" name="categories[view]" value="1"> &nbsp;&nbsp;View Access
                             &nbsp;&nbsp;
-                            <input type="checkbox" name="categories[edit]" @if ($role['edit_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;Edit Access
+                            <input type="checkbox" name="categories[edit]" value="1"> &nbsp;&nbsp;Edit Access
                             &nbsp;&nbsp;
-                            <input type="checkbox" name="categories[full]" @if ($role['full_access'] == 1) checked @endif value="1"> &nbsp;&nbsp;Full Access
+                            <input type="checkbox" name="categories[full]" value="1"> &nbsp;&nbsp;Full Access
+                            &nbsp;&nbsp;
+                            <input type="hidden" name="categories[module]" value="categories">
                         </div>
+                        @endif
                         
                         </div>
                         <!-- /.card-body -->

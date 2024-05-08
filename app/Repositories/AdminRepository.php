@@ -96,17 +96,14 @@ class AdminRepository implements AdminInterface {
     }
 
     public function getPermissions($id) {
-        $role = AdminsRole::where('admin_id', $id)->first();
+        $permissions = AdminsRole::where('admin_id', $id)->get();
         // Find the admin name
         $admin= Admin::find($id)->first();
         // Return only the updated data
         return [
-            'admin_id' => $role->admin_id,
+            'admin_id' => $id,
             'name' => $admin->name,
-            'module' => $role->module,
-            'view_access' => $role->view_access,
-            'edit_access' => $role->edit_access,
-            'full_access' => $role->full_access,
+            'permissions' => $permissions,
         ];
     }
 
@@ -133,43 +130,31 @@ class AdminRepository implements AdminInterface {
     public function updateRoles(array $data) {
         // Extract permissions data
         // Get the keys of the array
-        $keys = array_keys($data);
-        $cms = $keys[1];
-        $cat = $keys[2];
-        // Use the keys to access their corresponding arrays
-        $cms_permissions = $data[$cms] ?? [];;
-        $category_permissions = $data[$cat] ?? [];;
-        dd($category_permissions);
-      
+        $keys = array_keys(array_filter($data, function($value) {
+            return is_array($value);
+        }));
         // Ensure admin ID is an integer
         $adminId = (int)$data['admin_id'];
-    
-        // Find the admin role
-        $role = AdminsRole::where('admin_id', $adminId)->first();
-    
-        // If role doesn't exist, create a new one
-        if (!$role) {
-            $role = new AdminsRole();
-            $role->admin_id = $adminId;
+        
+        foreach ($keys as $key) {
+            // Check if a record exists with the provided conditions
+            $existingPermission = AdminsRole::where('admin_id', $adminId)->where('module', $key)->first();
+        
+            // If permission exists, delete it
+            if ($existingPermission) {
+                $existingPermission->delete();
+            }
+            // Create a new record with the updated values
+            AdminsRole::create([
+                'admin_id' => $adminId,
+                'module' => $key,
+                'view_access' => isset($data[$key]['view']) ? (int)$data[$key]['view'] : 0,
+                'edit_access' => isset($data[$key]['edit']) ? (int)$data[$key]['edit'] : 0,
+                'full_access' => isset($data[$key]['full']) ? (int)$data[$key]['full'] : 0,
+            ]);
         }
     
-        // Update or set permissions
-        $role->module = 'cms_pages';
-        $role->view_access = isset($permissions['view']) ? (int)$permissions['view'] : 0;
-        $role->edit_access = isset($permissions['edit']) ? (int)$permissions['edit'] : 0;
-        $role->full_access = isset($permissions['full']) ? (int)$permissions['full'] : 0;
-    
-        // Save the role
-        $role->save();
-    
-        // Return only the updated data
-        return [
-            'admin_id' => $role->admin_id,
-            'module' => $role->module,
-            'view_access' => $role->view_access,
-            'edit_access' => $role->edit_access,
-            'full_access' => $role->full_access,
-        ];
+        return true;
     }
     
     public function delete($id) {

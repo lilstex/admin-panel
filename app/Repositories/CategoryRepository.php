@@ -22,7 +22,7 @@ class CategoryRepository implements CategoryInterface {
     
         if (!$isAdmin) {
             // Retrieve the user's role permissions
-            $roles = AdminsRole::where('admin_id', Auth::guard('admin')->user()->id)->first();
+            $roles = AdminsRole::where('admin_id', Auth::guard('admin')->user()->id)->where('module', 'categories')->first();
     
             // If roles exist, update permissions accordingly
             if ($roles) {
