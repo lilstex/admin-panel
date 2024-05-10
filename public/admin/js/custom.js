@@ -49,7 +49,7 @@ $(document).ready(function() {
         })
     });
 
-     // Update Category status
+    // Update Category status
      $(document).on('click','.updateCategoryStatus', function () {
         var status = $(this).children("i").attr("status");
         var category_id = $(this).attr("category_id");
@@ -65,6 +65,31 @@ $(document).ready(function() {
                     $("#category-"+category_id).html("<i class='fas fa-toggle-on' style='color: #3f6ed3;' status='Active'></i>");
                 } else if(response['status'] == 'Active') {
                     $("#category-"+category_id).html("<i class='fas fa-toggle-off' style='color: grey;' status='Inactive'></i>");
+                }
+                
+            },
+            error: function () {
+
+            }
+        })
+    });
+
+      // Update Product status
+      $(document).on('click','.updateProductStatus', function () {
+        var status = $(this).children("i").attr("status");
+        var product_id = $(this).attr("product_id");
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
+            },
+            type: 'post',
+            url: 'categories/update_product_status',
+            data: { status: status, product_id: product_id },
+            success: function (response) {
+                if(response['status'] == 'Inactive') {
+                    $("#product-"+product_id).html("<i class='fas fa-toggle-on' style='color: #3f6ed3;' status='Active'></i>");
+                } else if(response['status'] == 'Active') {
+                    $("#product-"+product_id).html("<i class='fas fa-toggle-off' style='color: grey;' status='Inactive'></i>");
                 }
                 
             },

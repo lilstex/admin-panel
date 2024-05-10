@@ -2,17 +2,18 @@
 
 namespace App\Repositories;
 
-use App\Contracts\CategoryInterface;
+use App\Contracts\ProductInterface;
 use App\Models\AdminsRole;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
-class CategoryRepository implements CategoryInterface {
-    
+class ProductRepository implements ProductInterface {
+
     public function all() {
         // Initialize permissions with default values
         $permissions = [
-            'module' => 'categories',
+            'module' => 'products',
             'view_access' => 0,
             'edit_access' => 0,
             'full_access' => 0,
@@ -23,7 +24,7 @@ class CategoryRepository implements CategoryInterface {
     
         if (!$isAdmin) {
             // Retrieve the user's role permissions
-            $roles = AdminsRole::where('admin_id', Auth::guard('admin')->user()->id)->where('module', 'categories')->first();
+            $roles = AdminsRole::where('admin_id', Auth::guard('admin')->user()->id)->where('module', 'products')->first();
     
             // If roles exist, update permissions accordingly
             if ($roles) {
@@ -38,12 +39,12 @@ class CategoryRepository implements CategoryInterface {
             $permissions['full_access'] = 1;
         }
     
-        // Retrieve all categories
-        $categories = Category::with('parentcategory')->get();
+        // Retrieve all products
+        $products = Product::with('category')->get();
     
-        // Combine categories and permissions into an associative array
+        // Combine products and permissions into an associative array
         $data = [
-            'categories' => $categories,
+            'products' => $products,
             'permissions' => $permissions,
         ];
     
@@ -55,9 +56,8 @@ class CategoryRepository implements CategoryInterface {
         return Category::getcategories();
     }
 
-
     public function create(array $data) {
-        return Category::create([
+        return Product::create([
             'parent_id' => $data['parent_id'],
             'category_name' => $data['category_name'],
             'category_discount' => $data['category_discount'],
@@ -71,11 +71,11 @@ class CategoryRepository implements CategoryInterface {
     }
 
     public function show($id) {
-        return Category::find($id);
+        return Product::find($id);
     }
 
     public function update($id, array $data) {
-        $category = Category::find($id);
+        $category = Product::find($id);
         return $category->update([
             'parent_id' => $data['parent_id'],
             'category_name' => $data['category_name'],
@@ -95,17 +95,17 @@ class CategoryRepository implements CategoryInterface {
             $status = 1;
         }
         $id = (int)$data['category_id'];
-        $category = Category::where('id', $id)->update(['status' => $status]);
+        $category = Product::where('id', $id)->update(['status' => $status]);
         return $category;
     }
 
     public function delete($id) {
-        return Category::destroy($id);
+        return Product::destroy($id);
     }
 
     public function deleteImage($id) {
         // Get the image from the DB
-        $cat_image =  Category::select('category_image')->where('id', $id)->first();
+        $cat_image =  Product::select('category_image')->where('id', $id)->first();
         // Get the image path
         $image_path = 'admin/images/category/';
         // Remove the image from the folder
@@ -113,6 +113,6 @@ class CategoryRepository implements CategoryInterface {
             unlink($image_path.$cat_image->category_image);
         }
         // Remove the image from the DB table
-        return Category::where('id', $id)->update(['category_image' => '']);
+        return Product::where('id', $id)->update(['category_image' => '']);
     }
 }

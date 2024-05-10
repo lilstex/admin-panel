@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CmsPageController as AdminCmsPageController;
+use App\Http\Controllers\Admin\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +63,16 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::resource('categories', CategoryController::class);
         Route::post('categories/update_category_status', [CategoryController::class, 'updateCategoryStatus']);
         Route::delete('categories/image/{category}', [CategoryController::class, 'deleteImage']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | PRODUCTS RESOURCE ROUTES
+        |--------------------------------------------------------------------------
+        |
+        */
+        Route::resource('products', ProductController::class);
+        Route::post('products/update_product_status', [ProductController::class, 'updateProductStatus']);
+        Route::delete('products/image/{product}', [ProductController::class, 'deleteImage']);
 
     });
 });
