@@ -73,6 +73,7 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::resource('products', ProductController::class);
         Route::post('products/update_product_status', [ProductController::class, 'updateProductStatus']);
         Route::delete('products/image/{product}', [ProductController::class, 'deleteImage']);
+        Route::delete('products/video/{product}', [ProductController::class, 'deleteVideo']);
 
     });
 });

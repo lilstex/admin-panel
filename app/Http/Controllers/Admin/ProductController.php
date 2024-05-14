@@ -59,7 +59,8 @@ class ProductController extends Controller
         Session::put('page', 'product');
         $title = 'Add Product';
         $categoryLevels = $this->products->subcategories();
-        return view('admin.categories.create')->with(compact('title', 'categoryLevels'));
+        $filterProducts = $this->products->filter();
+        return view('admin.products.create')->with(compact('title', 'categoryLevels', 'filterProducts'));
     }
 
     /**
@@ -85,8 +86,9 @@ class ProductController extends Controller
         Session::put('page', 'product');
         $title = 'Edit Product';
         $product = $this->products->show($id);
-        $productLevels = $this->products->all();
-        return view('admin.products.create')->with(compact('title', 'product', 'productLevels'));
+        $categoryLevels = $this->products->subcategories();
+        $filterProducts = $this->products->filter();
+        return view('admin.products.create')->with(compact('title', 'product', 'categoryLevels', 'filterProducts'));
     }
 
     /**
@@ -116,6 +118,20 @@ class ProductController extends Controller
             return redirect()->back()->withErrors(['error_message' => 'Failed to delete product image']);
         }
     }
+
+    /**
+     * Remove product video
+     */
+    public function deleteVideo($id)
+    {
+        $deletedVideo = $this->products->deleteVideo($id);
+        if($deletedVideo) {
+            return redirect()->back()->with(['success_message' => 'Product video deleted successfully']);
+        } else {
+            return redirect()->back()->withErrors(['error_message' => 'Failed to delete product video']);
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.

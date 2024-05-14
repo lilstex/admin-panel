@@ -8,6 +8,8 @@ interface ProductInterface {
 
     public function subcategories();
 
+    public function filter();
+
     public function create(array $data);
 
     public function show($id);
@@ -19,5 +21,7 @@ interface ProductInterface {
     public function delete($id);
 
     public function deleteImage($id);
+
+    public function deleteVideo($id);
 
 }

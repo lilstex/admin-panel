@@ -105,17 +105,37 @@
                                 <input type="text" class="form-control" name="product_price" id="product_price" placeholder="Enter price" @if (!empty($product['product_price'])) value="{{ $product['product_price'] }}" @else value="{{ old('product_price') }}" @endif required>
                             </div>
                             <div class="form-group">
+                                <label for="meta_keywords">Product Attributes</label>
+                                <div class="field_wrapper">
+                                    <div>
+                                        <input type="text" name="size[]" id="size" placeholder="size" value="" style="width:120px;"/>
+                                        <input type="text" name="sku[]" id="sku" placeholder="sku" value="" style="width:120px;"/>
+                                        <input type="text" name="price[]" id="price" placeholder="price" value="" style="width:120px;"/>
+                                        <input type="text" name="stock[]" id="stock" placeholder="stock" value="" style="width:120px;"/>
+                                        <a href="javascript:void(0);" class="add_button" title="Add field">Add</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="meta_title">Meta Title</label>
                                 <input type="text" class="form-control" name="meta_title" id="meta_title" placeholder="Enter meta title" @if (!empty($product['meta_title'])) value="{{ $product['meta_title'] }}" @else value="{{ old('meta_title') }}" @endif>
                             </div>
                             <div class="form-group">
-                                <label for="meta_title">Product Image</label>
-                                <input type="file" class="form-control" name="product_image">
-                                @if (isset($product['image']))
-                                    <a href="{{ url('admin/images/product/'.$product['image']) }}" target="_blank">
-                                        <img style="width: 50px; margin: 10px" src="{{ url('admin/images/product/'.$product['image']) }}" alt="Image">
-                                    </a>
-                                    <form method="POST" action="{{ url('admin/products/image/' . $product['id']) }}" style="display: inline;">
+                                <label for="image">Product Image</label>
+                                <input type="file" class="form-control" name="product_images[]" multiple>
+                                @foreach ( $product['images'] as $image)
+                                <a href="{{ url('admin/images/product/'.$image['image']) }}" target="_blank">
+                                    <img style="width: 50px; margin: 10px" src="{{ url('admin/images/product/'.$image['image']) }}" alt="Image">
+                                </a>
+                                <form method="POST" action="{{ url('admin/products/image/' .$image['id']) }}" style="display: inline;">
+                                @endforeach
+                            </div>
+                            <div class="form-group">
+                                <label for="video">Product Video</label>
+                                <input type="file" class="form-control" name="product_video">
+                                @if (isset($product['product_video']))
+                                    <a href="{{ url('admin/videos/product/'.$product['product_video']) }}" target="_blank">Play Video</a>
+                                    <form method="POST" action="{{ url('admin/products/video/' . $product['id']) }}" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" name="product" class="confirmDelete" style="background: none; border: none; padding: 0; color: #fff;">
@@ -123,6 +143,36 @@
                                         </button>
                                       </form>
                                 @endif
+                            </div>
+                            <div class="form-group">
+                                <label for="fabric">Fabric</label>
+                                <select name="fabric" class="form-control">
+                                    <option value="">Select</option>
+                                    @foreach ($filterProduct['fabricArray'] as $fabric)
+                                        <option value="{{ $fabric }}">{{ $fabric }}</option>
+                                    @endforeach
+                                    
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="pattern">Pattern</label>
+                                <select name="pattern" class="form-control">
+                                    <option value="">Select</option>
+                                    @foreach ($filterProduct['patternArray'] as $pattern)
+                                        <option value="{{ $pattern }}">{{ $pattern }}</option>
+                                    @endforeach
+                                    
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sleeve">Sleeve</label>
+                                <select name="sleeve" class="form-control">
+                                    <option value="">Select</option>
+                                    @foreach ($filterProduct['sleeveArray'] as $sleeve)
+                                        <option value="{{ $sleeve }}">{{ $sleeve }}</option>
+                                    @endforeach
+                                    
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="meta_keywords">Meta Keywords</label>
@@ -142,7 +192,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="is_feature">Featured</label>
-                                <input type="checkbox" class="form-control" name="is_featured" value="Yes">
+                                <input type="checkbox" class="form-control" name="is_featured" value="Yes" @if (!empty($product['is_featured']) && $product['is_featured'] == 'Yes') checked  @endif>
                             </div>
                         </div>
                         <!-- /.card-body -->

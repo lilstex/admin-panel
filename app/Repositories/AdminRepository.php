@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Contracts\AdminInterface;
 use App\Models\Admin;
-use App\Models\adminRoles;
 use App\Models\AdminsRole;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
